@@ -1,138 +1,94 @@
-import { Link } from "@remix-run/react";
+import {
+  Navbar,
+  Button,
+  Flowbite,
+  DarkThemeToggle,
+  Card,
+  TextInput,
+} from "flowbite-react";
+import { HiSearch } from "react-icons/hi";
+import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
+import { json } from "@remix-run/node";
 
 import { useOptionalUser } from "~/utils";
+import { requireUserId } from "~/session.server";
+import { useUser } from "~/utils";
+import { getSamples } from "~/models/sample.server";
+
+import AudioPlayer from "react-h5-audio-player";
+
+import type { LoaderFunction } from "@remix-run/node";
+
+type LoaderData = {
+  samples: Awaited<ReturnType<typeof getSamples>>;
+};
+
+export const loader: LoaderFunction = async () => {
+  const samples = await getSamples();
+  return json<LoaderData>({ samples });
+};
 
 export default function Index() {
   const user = useOptionalUser();
-  return (
-    <main className="relative min-h-screen bg-white sm:flex sm:items-center sm:justify-center">
-      <div className="relative sm:pb-16 sm:pt-8">
-        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <div className="relative shadow-xl sm:overflow-hidden sm:rounded-2xl">
-            <div className="absolute inset-0">
-              <img
-                className="h-full w-full object-cover"
-                src="https://user-images.githubusercontent.com/1500684/157774694-99820c51-8165-4908-a031-34fc371ac0d6.jpg"
-                alt="Sonic Youth On Stage"
-              />
-              <div className="absolute inset-0 bg-[color:rgba(254,204,27,0.5)] mix-blend-multiply" />
-            </div>
-            <div className="relative px-4 pt-16 pb-8 sm:px-6 sm:pt-24 sm:pb-14 lg:px-8 lg:pb-20 lg:pt-32">
-              <h1 className="text-center text-6xl font-extrabold tracking-tight sm:text-8xl lg:text-9xl">
-                <span className="block uppercase text-yellow-500 drop-shadow-md">
-                  Indie Stack
-                </span>
-              </h1>
-              <p className="mx-auto mt-6 max-w-lg text-center text-xl text-white sm:max-w-3xl">
-                Check the README.md file for instructions on how to get this
-                project deployed.
-              </p>
-              <div className="mx-auto mt-10 max-w-sm sm:flex sm:max-w-none sm:justify-center">
-                {user ? (
-                  <Link
-                    to="/notes"
-                    className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
-                  >
-                    View Notes for {user.email}
-                  </Link>
-                ) : (
-                  <div className="space-y-4 sm:mx-auto sm:inline-grid sm:grid-cols-2 sm:gap-5 sm:space-y-0">
-                    <Link
-                      to="/join"
-                      className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
-                    >
-                      Sign up
-                    </Link>
-                    <Link
-                      to="/login"
-                      className="flex items-center justify-center rounded-md bg-yellow-500 px-4 py-3 font-medium text-white hover:bg-yellow-600  "
-                    >
-                      Log In
-                    </Link>
-                  </div>
-                )}
-              </div>
-              <a href="https://remix.run">
-                <img
-                  src="https://user-images.githubusercontent.com/1500684/158298926-e45dafff-3544-4b69-96d6-d3bcc33fc76a.svg"
-                  alt="Remix"
-                  className="mx-auto mt-16 w-full max-w-[12rem] md:max-w-[16rem]"
-                />
-              </a>
-            </div>
-          </div>
-        </div>
+  const data = useLoaderData() as LoaderData;
 
-        <div className="mx-auto max-w-7xl py-2 px-4 sm:px-6 lg:px-8">
-          <div className="mt-6 flex flex-wrap justify-center gap-8">
-            {[
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157764397-ccd8ea10-b8aa-4772-a99b-35de937319e1.svg",
-                alt: "Fly.io",
-                href: "https://fly.io",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157764395-137ec949-382c-43bd-a3c0-0cb8cb22e22d.svg",
-                alt: "SQLite",
-                href: "https://sqlite.org",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157764484-ad64a21a-d7fb-47e3-8669-ec046da20c1f.svg",
-                alt: "Prisma",
-                href: "https://prisma.io",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157764276-a516a239-e377-4a20-b44a-0ac7b65c8c14.svg",
-                alt: "Tailwind",
-                href: "https://tailwindcss.com",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157764454-48ac8c71-a2a9-4b5e-b19c-edef8b8953d6.svg",
-                alt: "Cypress",
-                href: "https://www.cypress.io",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157772386-75444196-0604-4340-af28-53b236faa182.svg",
-                alt: "MSW",
-                href: "https://mswjs.io",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157772447-00fccdce-9d12-46a3-8bb4-fac612cdc949.svg",
-                alt: "Vitest",
-                href: "https://vitest.dev",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157772662-92b0dd3a-453f-4d18-b8be-9fa6efde52cf.png",
-                alt: "Testing Library",
-                href: "https://testing-library.com",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157772934-ce0a943d-e9d0-40f8-97f3-f464c0811643.svg",
-                alt: "Prettier",
-                href: "https://prettier.io",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157772990-3968ff7c-b551-4c55-a25c-046a32709a8e.svg",
-                alt: "ESLint",
-                href: "https://eslint.org",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157773063-20a0ed64-b9f8-4e0b-9d1e-0b65a3d4a6db.svg",
-                alt: "TypeScript",
-                href: "https://typescriptlang.org",
-              },
-            ].map((img) => (
-              <a
-                key={img.href}
-                href={img.href}
-                className="flex h-16 w-32 justify-center p-1 grayscale transition hover:grayscale-0 focus:grayscale-0"
+  return (
+    <Flowbite>
+      <Navbar fluid={true}>
+        <Navbar.Brand href="https://samplage.com/">
+          <svg
+            className="mr-3 h-6 sm:h-9"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 640 512"
+          >
+            <path d="M224 96C206.3 96 192 110.3 192 127.1v256C192 401.7 206.3 416 223.1 416S256 401.7 256 384V127.1C256 110.3 241.7 96 224 96zM32 224C14.33 224 0 238.3 0 255.1S14.33 288 31.1 288S64 273.7 64 256S49.67 224 32 224zM320 0C302.3 0 288 14.33 288 31.1V480C288 497.7 302.3 512 319.1 512S352 497.7 352 480V31.1C352 14.33 337.7 0 320 0zM128 192C110.3 192 96 206.3 96 223.1V288C96 305.7 110.3 320 127.1 320S160 305.7 160 288V223.1C160 206.3 145.7 192 128 192zM608 224c-17.67 0-32 14.33-32 31.1S590.3 288 608 288s32-14.33 32-31.1S625.7 224 608 224zM416 128C398.3 128 384 142.3 384 159.1v192C384 369.7 398.3 384 415.1 384S448 369.7 448 352V159.1C448 142.3 433.7 128 416 128zM512 64c-17.67 0-32 14.33-32 31.1V416C480 433.7 494.3 448 511.1 448C529.7 448 544 433.7 544 416V95.1C544 78.33 529.7 64 512 64z" />
+          </svg>
+          <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+            Samplage
+          </span>
+        </Navbar.Brand>
+        <div className="flex space-x-2 md:order-2">
+          <DarkThemeToggle />
+          <Button>Sign in</Button>
+          <Navbar.Toggle />
+        </div>
+        <Navbar.Collapse>
+          <Navbar.Link href="./">Movie Quotes</Navbar.Link>
+          <Navbar.Link href="./">Trailer Quotes</Navbar.Link>
+          <Navbar.Link href="./">TV Quotes</Navbar.Link>
+        </Navbar.Collapse>
+      </Navbar>
+      <div className="mx-auto flex max-w-4xl flex-col space-y-4">
+        {/* <TextInput
+          id="search"
+          type="search"
+          placeholder="Search Samples"
+          icon={HiSearch}
+        /> */}
+
+        {data.samples.length === 0 ? (
+          <p className="p-4">No notes yet</p>
+        ) : (
+          <div className="flex flex-col space-y-4 ">
+            {data.samples.map((note) => (
+              <Card
+                key={note.id}
+                horizontal={true}
+                imgSrc="./assets/2006_rocky_balboa_046.jpg"
+                style={{ maxWidth: "100%" }}
               >
-                <img alt={img.alt} src={img.src} />
-              </a>
+                <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  {note.title}
+                </h5>
+                <AudioPlayer src="./assets/rocky_balboa-it_aint_about_how_hard_you_hit.mp3" />
+                <p className="font-normal text-gray-700 dark:text-gray-400">
+                  {note.transcript}
+                </p>
+              </Card>
             ))}
           </div>
-        </div>
+        )}
       </div>
-    </main>
+    </Flowbite>
   );
 }

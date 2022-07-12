@@ -16,6 +16,8 @@ model User {
 
   password Password?
   notes    Note[]
+  Sample   Sample[]
+  Vote     Vote[]
 }
 
 model Password {
@@ -35,4 +37,56 @@ model Note {
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String
+}
+
+model Sample {
+  id                    String                  @id @default(cuid())
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  title                 String
+  transcript            String
+  published             Boolean                 @default(false)
+  author                User                    @relation(fields: [authorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  authorId              String
+  category              Category                @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  categoryId            String
+  votes                 Vote[]
+  SampleTagRelationship SampleTagRelationship[]
+  Tag                   Tag[]
+}
+
+model Category {
+  id       String     @id @default(cuid())
+  name     String
+  parent   Category?  @relation(name: "NestedCategories", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  parentId String?
+  children Category[] @relation(name: "NestedCategories")
+  Sample   Sample[]
+}
+
+model Tag {
+  id                    String                  @id @default(cuid())
+  name                  String
+  Sample                Sample?                 @relation(references: [id], fields: [sampleId])
+  sampleId              String?
+  SampleTagRelationship SampleTagRelationship[]
+}
+
+model SampleTagRelationship {
+  tag      Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  tagId    String
+  sample   Sample @relation(fields: [sampleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sampleId String
+
+  @@unique([tagId, sampleId])
+}
+
+model Vote {
+  voter    User   @relation(fields: [voterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  voterId  String
+  sample   Sample @relation(fields: [sampleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sampleId String
+  score    Int
+
+  @@unique([voterId, sampleId])
 }
