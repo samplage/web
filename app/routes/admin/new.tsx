@@ -13,6 +13,7 @@ type ActionData = {
   errors?: {
     title?: string;
     transcript?: string;
+    categoryId?: string;
   };
 };
 
