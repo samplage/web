@@ -42,6 +42,13 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
+  if (typeof categoryId !== "string" || categoryId.length === 0) {
+    return json<ActionData>(
+      { errors: { categoryId: "categoryId is required" } },
+      { status: 400 }
+    );
+  }
+
   const sample = await createSample({ title, transcript, userId, categoryId });
   console.log(sample);
 
