@@ -50,10 +50,15 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
-  const sample = await createSample({ title, transcript, userId, categoryId });
+  const sample = await createSample({
+    title,
+    transcript,
+    userId,
+    categoryId,
+  });
   console.log(sample);
 
-  return redirect(`./`);
+  return redirect(`/admin/new/`);
 };
 
 export const loader: LoaderFunction = async () => {
