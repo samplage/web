@@ -15,9 +15,8 @@ model User {
   updatedAt DateTime @updatedAt
 
   password Password?
-  notes    Note[]
-  Sample   Sample[]
-  Vote     Vote[]
+  samples  Sample[]
+  votes    Vote[]
 }
 
 model Password {
@@ -27,18 +26,6 @@ model Password {
   userId String @unique
 }
 
-model Note {
-  id    String @id @default(cuid())
-  title String
-  body  String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String
-}
-
 model Sample {
   id                    String                  @id @default(cuid())
   createdAt             DateTime                @default(now())
@@ -46,9 +33,9 @@ model Sample {
   title                 String
   transcript            String
   published             Boolean                 @default(false)
-  author                User                    @relation(fields: [authorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  author                User                    @relation(fields: [authorId], references: [id])
   authorId              String
-  category              Category                @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  category              Category                @relation(fields: [categoryId], references: [id])
   categoryId            String
   votes                 Vote[]
   SampleTagRelationship SampleTagRelationship[]
@@ -73,18 +60,18 @@ model Tag {
 }
 
 model SampleTagRelationship {
-  tag      Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  tag      Tag    @relation(fields: [tagId], references: [id])
   tagId    String
-  sample   Sample @relation(fields: [sampleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sample   Sample @relation(fields: [sampleId], references: [id])
   sampleId String
 
   @@unique([tagId, sampleId])
 }
 
 model Vote {
-  voter    User   @relation(fields: [voterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  voter    User   @relation(fields: [voterId], references: [id])
   voterId  String
-  sample   Sample @relation(fields: [sampleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sample   Sample @relation(fields: [sampleId], references: [id])
   sampleId String
   score    Int
 
